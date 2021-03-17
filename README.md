@@ -1,8 +1,11 @@
-> This script is based on https://github.com/joshuaavalon/SynologyCloudflareDDNS
+> This project is a fork of the [SynologyCloudflareDDNS](https://github.com/joshuaavalon/SynologyCloudflareDDNS)-Project which is made by [Joshua Avalon](https://joshuaavalon.io/)
 
 # Synology Hetzner DDNS Script 📜
 
 The is a script to be used to add [Hetzner](https://www.hetzner.com/) as a DDNS to [Synology](https://www.synology.com/) NAS. The script uses the [Hetzner DNS API](https://dns.hetzner.com/api-docs/) v1.1.1.
+
+## ToDo
+- [ ] Configure zone id instead of record id and outomatically use the right record
 
 ## How to use
 
