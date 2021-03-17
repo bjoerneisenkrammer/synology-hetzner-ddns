@@ -1,6 +1,8 @@
-# Synology Cloudflare DDNS Script 📜
+> This script is based on https://github.com/joshuaavalon/SynologyCloudflareDDNS
 
-The is a script to be used to add [Cloudflare](https://www.cloudflare.com/) as a DDNS to [Synology](https://www.synology.com/) NAS. The script used an updated API, Cloudflare API v4.
+# Synology Hetzner DDNS Script 📜
+
+The is a script to be used to add [Hetzner](https://www.hetzner.com/) as a DDNS to [Synology](https://www.synology.com/) NAS. The script uses the [Hetzner DNS API](https://dns.hetzner.com/api-docs/) v1.1.1.
 
 ## How to use
 
@@ -13,10 +15,10 @@ The is a script to be used to add [Cloudflare](https://www.cloudflare.com/) as a
 
 ### Run commands in Synology
 
-1. Download `cloudflareddns.sh` from this repository to `/sbin/cloudflareddns.sh`
+1. Download `hetznerddns.sh` from this repository to `/sbin/hetznerddns.sh`
 
 ```
-wget https://raw.githubusercontent.com/joshuaavalon/SynologyCloudflareDDNS/master/cloudflareddns.sh -O /sbin/cloudflareddns.sh
+wget https://gitlab.com/onsive.net/SynologyHetznerDDNS/-/raw/master/hetznerddns.sh -O /sbin/hetznerddns.sh
 ```
 
 It is not a must, you can put I whatever you want. If you put the script in other name or path, make sure you use the right path.
@@ -24,33 +26,48 @@ It is not a must, you can put I whatever you want. If you put the script in othe
 2. Give others execute permission
 
 ```
-chmod +x /sbin/cloudflareddns.sh
+chmod +x /sbin/hetznerddns.sh
 ```
 
-3. Add `cloudflareddns.sh` to Synology
+3. Add `hetznerddns.sh` to Synology
 
 ```
 cat >> /etc.defaults/ddns_provider.conf << 'EOF'
-[Cloudflare]
-        modulepath=/sbin/cloudflareddns.sh
-        queryurl=https://www.cloudflare.com
-        website=https://www.cloudflare.com
+[Hetzner]
+        modulepath=/sbin/hetznerddns.sh
+        queryurl=https://dns.hetzner.com/api/v1
+        website=https://dns.hetzner.com
 E*.
 ```
 
 `queryurl` does not matter because we are going to use our script but it is needed.
 
-### Get Cloudflare parameters
+### Get Hetzner parameters
 
-1. Go to your domain overview page and copy your zone ID.
-2. Go to your profile > **API Tokens** > **Create Token**. It should have the permissions of `Zone > DNS > Edit`. Copy the api token.
+**AccessToken:**
+1. Go to [`https://dns.hetzner.com/`](https://dns.hetzner.com/)
+2. Click on `Manage API tokens`
+3. Insert you `Synology DDNS` (or whatever you like) as token name
+4. Click on `Create access token`
+5. Save the newly generated access token locally
+
+**Record ID:**
+1. Go to [`https://dns.hetzner.com/`](https://dns.hetzner.com/)
+2. Click on your zone
+3. Save the zone ID from the url locally `https://dns.hetzner.com/zone/<ZoneID>` (ex: `https://dns.hetzner.com/zone/ >> 7D4UzSirxxxxxxxxxxxxxx <<`)
+4. Run following command with your zone id and access token
+```
+curl "https://dns.hetzner.com/api/v1/records?zone_id=<ZoneID>" \
+     -H 'Auth-API-Token: <AccessToken>'
+```
+5. Find the record you would like to use and save the record id locally
 
 ### Setup DDNS
 
 1. Login to your DSM
 2. Go to Control Panel > External Access > DDNS > Add
 3. Enter the following:
-   - Service provider: `Cloudflare`
+   - Service provider: `Hetzner`
    - Hostname: `www.example.com`
-   - Username/Email: `<Zone ID>`
-   - Password Key: `<API Token>`
+   - Username/Email: `<RecordID>`
+   - Password Key: `<AccessToken>`
