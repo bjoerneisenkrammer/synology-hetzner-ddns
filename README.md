@@ -1,11 +1,10 @@
-> This project is a fork of the [SynologyCloudflareDDNS](https://github.com/joshuaavalon/SynologyCloudflareDDNS)-Project which is made by [Joshua Avalon](https://joshuaavalon.io/)
+> This project is a fork of the [SynologyHetznerDDNS](https://gitlab.com/onsive.net/SynologyHetznerDDNS)-Project which is made by OnSive.net
 
-# Synology Hetzner DDNS Script 📜
+# Synology Hetzner DDNS Script
+The is a script to be used to add [Hetzner](https://www.hetzner.com/) as a DDNS to [Synology](https://www.synology.com/) NAS. It uses the [Hetzner DNS API](https://dns.hetzner.com/api-docs/) v1.1.1, based on the forked project.
 
-The is a script to be used to add [Hetzner](https://www.hetzner.com/) as a DDNS to [Synology](https://www.synology.com/) NAS. The script uses the [Hetzner DNS API](https://dns.hetzner.com/api-docs/) v1.1.1.
-
-## ToDo
-- [ ] Configure zone id instead of record id and outomatically use the right record
+In addition the script supports multiple record names for IPv4 and IPv6.
+IP addresses are determined via https://ip.hetzner.com/
 
 ## How to use
 
@@ -21,10 +20,8 @@ The is a script to be used to add [Hetzner](https://www.hetzner.com/) as a DDNS 
 1. Download `hetznerddns.sh` from this repository to `/sbin/hetznerddns.sh`
 
 ```
-wget https://gitlab.com/onsive.net/SynologyHetznerDDNS/-/raw/master/hetznerddns.sh -O /sbin/hetznerddns.sh
+wget https://github.com/bjoerneisenkrammer/synology-hetzner-ddns/blob/main/hetznerddns.sh -O /sbin/hetznerddns.sh
 ```
-
-It is not a must, you can put I whatever you want. If you put the script in other name or path, make sure you use the right path.
 
 2. Give others execute permission
 
@@ -40,7 +37,7 @@ cat >> /etc.defaults/ddns_provider.conf << 'EOF'
         modulepath=/sbin/hetznerddns.sh
         queryurl=https://dns.hetzner.com/api/v1
         website=https://dns.hetzner.com
-E*.
+EOF
 ```
 
 `queryurl` does not matter because we are going to use our script but it is needed.
@@ -54,16 +51,10 @@ E*.
 4. Click on `Create access token`
 5. Save the newly generated access token locally
 
-**Record ID:**
+**Record Names:**
 1. Go to [`https://dns.hetzner.com/`](https://dns.hetzner.com/)
 2. Click on your zone
-3. Save the zone ID from the url locally `https://dns.hetzner.com/zone/<ZoneID>` (ex: `https://dns.hetzner.com/zone/ >> 7D4UzSirxxxxxxxxxxxxxx <<`)
-4. Run following command with your zone id and access token
-```
-curl "https://dns.hetzner.com/api/v1/records?zone_id=<ZoneID>" \
-     -H 'Auth-API-Token: <AccessToken>'
-```
-5. Find the record you would like to use and save the record id locally
+3. Find the record names from the url you would like to update (e.g. `@` and `*`)
 
 ### Setup DDNS
 
@@ -72,5 +63,5 @@ curl "https://dns.hetzner.com/api/v1/records?zone_id=<ZoneID>" \
 3. Enter the following:
    - Service provider: `Hetzner`
    - Hostname: `www.example.com`
-   - Username/Email: `<RecordID>`
+   - Username/Email: `<RecordNames>` (e.g. `@,*`)
    - Password Key: `<AccessToken>`
