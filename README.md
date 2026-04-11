@@ -6,7 +6,16 @@ The is a script to be used to add [Hetzner](https://www.hetzner.com/) as a DDNS 
 In addition the script supports multiple record names for IPv4 and IPv6.
 IP addresses are determined via https://ip.hetzner.com/
 
-## How to use
+## Installation
+
+There are two ways to install the script on your Synology NAS:
+
+- **[Option A: Manual installation via SSH](#option-a-manual-installation-via-ssh)** — simple one-time setup
+- **[Option B: Boot task script](#option-b-boot-task-script)** — automatically reinstalls after DSM updates
+
+---
+
+## Option A: Manual installation via SSH
 
 ### Access Synology via SSH
 
@@ -20,7 +29,7 @@ IP addresses are determined via https://ip.hetzner.com/
 1. Download `hetznerddns.sh` from this repository to `/sbin/hetznerddns.sh`
 
 ```
-wget https://github.com/bjoerneisenkrammer/synology-hetzner-ddns/blob/main/hetznerddns.sh -O /sbin/hetznerddns.sh
+curl -fsSL https://raw.githubusercontent.com/bjoerneisenkrammer/synology-hetzner-ddns/main/hetznerddns.sh -o /sbin/hetznerddns.sh
 ```
 
 2. Give others execute permission
@@ -42,7 +51,42 @@ EOF
 
 `queryurl` does not matter because we are going to use our script but it is needed.
 
-### Get Hetzner parameters
+> **Note:** DSM major updates may overwrite `/sbin/` and reset `ddns_provider.conf`, requiring you to repeat these steps. Use Option B to avoid this.
+
+---
+
+## Option B: Boot task script
+
+`synology-boot-task.sh` automatically downloads the latest `hetznerddns.sh` and configures `ddns_provider.conf` on every boot. This ensures the setup survives DSM updates without any manual intervention.
+
+### Setup
+
+1. Copy `synology-boot-task.sh` to a location on your data volume that survives DSM updates, e.g. `/volume1/scripts/`
+
+```
+mkdir -p /volume1/scripts
+curl -fsSL https://raw.githubusercontent.com/bjoerneisenkrammer/synology-hetzner-ddns/main/synology-boot-task.sh -o /volume1/scripts/synology-boot-task.sh
+chmod +x /volume1/scripts/synology-boot-task.sh
+```
+
+2. In DSM, go to **Control Panel > Task Scheduler > Create > Triggered Task > User-defined script**
+
+3. Configure the task:
+   - **Task name:** Hetzner DDNS Setup
+   - **User:** `root`
+   - **Event:** Boot-up
+   - **Script:**
+     ```
+     bash /volume1/scripts/synology-boot-task.sh
+     ```
+
+4. Save and run the task once manually to verify it works.
+
+The script logs all actions to syslog under the tag `hetzner-ddns-setup`, visible in DSM under **Log Center**.
+
+---
+
+## Get Hetzner parameters
 
 **AccessToken:**
 1. Go to [`https://dns.hetzner.com/`](https://dns.hetzner.com/)
@@ -56,7 +100,7 @@ EOF
 2. Click on your zone
 3. Find the record names from the url you would like to update (e.g. `@` and `*`)
 
-### Setup DDNS
+## Setup DDNS
 
 1. Login to your DSM
 2. Go to Control Panel > External Access > DDNS > Add
