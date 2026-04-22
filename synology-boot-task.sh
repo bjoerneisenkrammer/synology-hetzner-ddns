@@ -50,8 +50,8 @@ else
 	cat >>"$DDNS_CONF" <<'EOF'
 [Hetzner]
         modulepath=/sbin/hetznerddns.sh
-        queryurl=https://dns.hetzner.com/api/v1
-        website=https://dns.hetzner.com
+        queryurl=https://api.hetzner.cloud/v1
+        website=https://console.hetzner.cloud
 EOF
 	log "Added [Hetzner] entry to $DDNS_CONF."
 fi
