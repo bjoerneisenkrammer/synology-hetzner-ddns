@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+set -e
 
 # -------------------------------------------------------
 # Synology Boot Task: Hetzner DDNS Setup
