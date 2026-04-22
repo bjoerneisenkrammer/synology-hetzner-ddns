@@ -1,7 +1,7 @@
 > This project is a fork of the [SynologyHetznerDDNS](https://gitlab.com/onsive.net/SynologyHetznerDDNS)-Project which is made by OnSive.net
 
 # Synology Hetzner DDNS Script
-The is a script to be used to add [Hetzner](https://www.hetzner.com/) as a DDNS to [Synology](https://www.synology.com/) NAS. It uses the [Hetzner DNS API](https://dns.hetzner.com/api-docs/) v1.1.1, based on the forked project.
+The is a script to be used to add [Hetzner](https://www.hetzner.com/) as a DDNS to [Synology](https://www.synology.com/) NAS. It uses the [Hetzner Cloud API](https://docs.hetzner.cloud/reference/cloud#tag/zones), based on the forked project.
 
 In addition the script supports multiple record names for IPv4 and IPv6.
 IP addresses are determined via https://ip.hetzner.com/
@@ -35,8 +35,8 @@ chmod +x /sbin/hetznerddns.sh
 cat >> /etc.defaults/ddns_provider.conf << 'EOF'
 [Hetzner]
         modulepath=/sbin/hetznerddns.sh
-        queryurl=https://dns.hetzner.com/api/v1
-        website=https://dns.hetzner.com
+        queryurl=https://api.hetzner.cloud/v1
+        website=https://console.hetzner.com
 EOF
 ```
 
@@ -45,16 +45,18 @@ EOF
 ### Get Hetzner parameters
 
 **AccessToken:**
-1. Go to [`https://dns.hetzner.com/`](https://dns.hetzner.com/)
-2. Click on `Manage API tokens`
-3. Insert you `Synology DDNS` (or whatever you like) as token name
-4. Click on `Create access token`
-5. Save the newly generated access token locally
+1. Go to [`https://console.hetzner.com/`](https://console.hetzner.com/)
+2. Select your project
+3. Go to `Security` > `API Tokens`
+4. Click on `Generate API token`
+5. Insert `Synology DDNS` (or whatever you like) as token name, select `Read & Write`
+6. Save the newly generated access token locally
 
 **Record Names:**
-1. Go to [`https://dns.hetzner.com/`](https://dns.hetzner.com/)
-2. Click on your zone
-3. Find the record names from the url you would like to update (e.g. `@` and `*`)
+1. Go to [`https://console.hetzner.com/`](https://console.hetzner.com/)
+2. Select your project and navigate to `Networking` > `DNS`
+3. Click on your zone
+4. Find the record names you would like to update (e.g. `@` and `*`)
 
 ### Setup DDNS
 

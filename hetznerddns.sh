@@ -24,9 +24,9 @@ update_record() {
 	local ip_addr="$4"
 	local zone_id="$5"
 
-	response=$(curl -s -X "PUT" "https://dns.hetzner.com/api/v1/records/$record_id" \
+	response=$(curl -s -X "PUT" "https://api.hetzner.cloud/v1/zones/$zone_id/records/$record_id" \
 		-H "Content-Type: application/json" \
-		-H "Auth-API-Token: $accessToken" \
+		-H "Authorization: Bearer $accessToken" \
 		-d "{
       \"value\": \"$ip_addr\",
       \"ttl\": 600,
@@ -47,7 +47,7 @@ ipv4=$(get_ip 4)
 ipv6=$(get_ip 6)
 
 # Get zone information
-zone_info=$(curl -s "https://dns.hetzner.com/api/v1/zones" -H "Auth-API-Token: $accessToken")
+zone_info=$(curl -s "https://api.hetzner.cloud/v1/zones" -H "Authorization: Bearer $accessToken")
 zone_id=$(echo "$zone_info" | jq -r ".zones[] | select(.name == \"$domain\") | .id")
 
 if [[ -z "$zone_id" ]]; then
@@ -56,7 +56,7 @@ if [[ -z "$zone_id" ]]; then
 fi
 
 # Get records for the zone
-records_info=$(curl -s "https://dns.hetzner.com/api/v1/records?zone_id=$zone_id" -H "Auth-API-Token: $accessToken")
+records_info=$(curl -s "https://api.hetzner.cloud/v1/zones/$zone_id/records" -H "Authorization: Bearer $accessToken")
 
 # Update records for each host
 IFS=',' read -ra host_array <<<"$hosts"
