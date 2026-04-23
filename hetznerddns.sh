@@ -1,4 +1,5 @@
 #!/bin/bash
+# Version: 2.2.0
 set -e
 
 # DSM configuration parameters
