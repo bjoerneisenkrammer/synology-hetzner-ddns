@@ -23,12 +23,12 @@ update_rrset() {
 	local type="$3"
 	local ip_addr="$4"
 
-	response=$(curl -s -X "PUT" "https://api.hetzner.cloud/v1/zones/$zone_id/rrsets/$name/$type" \
+	response=$(curl -s -X "POST" "https://api.hetzner.cloud/v1/zones/$zone_id/rrsets/$name/$type/actions/set_records" \
 		-H "Content-Type: application/json" \
 		-H "Authorization: Bearer $accessToken" \
-		-d "{\"records\": [{\"value\": \"$ip_addr\"}], \"ttl\": 600}")
+		-d "{\"records\": [{\"value\": \"$ip_addr\", \"comment\": \"\"}]}")
 
-	if [[ $(echo "$response" | jq -r ".rrset") != null ]]; then
+	if [[ $(echo "$response" | jq -r ".action.error") == null ]]; then
 		changes_made=true
 	else
 		auth_failed=true
