@@ -14,7 +14,7 @@ auth_failed=false
 # Function to get IP address
 get_ip() {
 	local ip_type="$1"
-	curl -s -"$ip_type" https://ip.hetzner.com/
+	curl -sf -"$ip_type" https://ip.hetzner.com/
 }
 
 # Function to update a DNS RRset
