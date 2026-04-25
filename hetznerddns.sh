@@ -1,6 +1,6 @@
 #!/bin/bash
 # Version: 2.1.1
-set -e
+set -euo pipefail
 
 # DSM configuration parameters
 hosts="$1"
