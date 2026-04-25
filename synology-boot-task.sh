@@ -32,8 +32,8 @@ log "=== Hetzner DDNS setup started ==="
 
 # Resolve latest release tag (fallback to main on failure)
 REF=$(curl -fsSL -o /dev/null -w "%{url_effective}" \
-	"https://github.com/$GITHUB_REPO/releases/latest" 2>/dev/null \
-	| sed -n 's|.*/tag/\(.*\)|\1|p')
+	"https://github.com/$GITHUB_REPO/releases/latest" 2>/dev/null |
+	sed -n 's|.*/tag/\(.*\)|\1|p')
 
 if [[ -z "$REF" ]]; then
 	log "WARNING: Could not resolve latest release tag, falling back to main"
