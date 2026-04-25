@@ -73,7 +73,7 @@ check_and_update() {
 
 # Get current IP addresses
 ipv4=$(get_ip 4)
-ipv6=$(get_ip 6)
+ipv6=$(get_ip 6 || true)
 
 # Get zone information
 zone_response=$(curl -s -w "%{http_code}" "https://api.hetzner.cloud/v1/zones" -H "Authorization: Bearer $accessToken")
