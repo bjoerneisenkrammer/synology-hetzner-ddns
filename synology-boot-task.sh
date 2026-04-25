@@ -43,6 +43,10 @@ fi
 chmod +x "$INSTALL_PATH"
 log "Permissions set: +x $INSTALL_PATH"
 
+# Log installed script version
+VERSION=$(grep -m1 '^# Version:' "$INSTALL_PATH" | awk '{print $3}')
+log "Installed version: ${VERSION:-unknown}"
+
 # Add provider entry to ddns_provider.conf (idempotent)
 if grep -q "^\[Hetzner\]" "$DDNS_CONF" 2>/dev/null; then
 	log "ddns_provider.conf already contains [Hetzner] entry, skipping."
