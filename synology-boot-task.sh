@@ -18,7 +18,7 @@ set -e
 
 export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
 
-SCRIPT_URL="https://raw.githubusercontent.com/bjoerneisenkrammer/synology-hetzner-ddns/main/hetznerddns.sh"
+GITHUB_REPO="bjoerneisenkrammer/synology-hetzner-ddns"
 INSTALL_PATH="/sbin/hetznerddns.sh"
 DDNS_CONF="/etc.defaults/ddns_provider.conf"
 LOG_TAG="hetzner-ddns-setup"
@@ -29,6 +29,20 @@ log() {
 }
 
 log "=== Hetzner DDNS setup started ==="
+
+# Resolve latest release tag (fallback to main on failure)
+REF=$(curl -fsSL -o /dev/null -w "%{url_effective}" \
+	"https://github.com/$GITHUB_REPO/releases/latest" 2>/dev/null |
+	sed -n 's|.*/tag/\(.*\)|\1|p')
+
+if [[ -z "$REF" ]]; then
+	log "WARNING: Could not resolve latest release tag, falling back to main"
+	REF="main"
+else
+	log "Latest release: $REF"
+fi
+
+SCRIPT_URL="https://raw.githubusercontent.com/$GITHUB_REPO/$REF/hetznerddns.sh"
 
 # Download latest script
 log "Downloading hetznerddns.sh..."
@@ -42,6 +56,10 @@ fi
 # Set execute permissions
 chmod +x "$INSTALL_PATH"
 log "Permissions set: +x $INSTALL_PATH"
+
+# Log installed script version
+VERSION=$(grep -m1 '^# Version:' "$INSTALL_PATH" | awk '{print $3}')
+log "Installed version: ${VERSION:-unknown}"
 
 # Add provider entry to ddns_provider.conf (idempotent)
 if grep -q "^\[Hetzner\]" "$DDNS_CONF" 2>/dev/null; then
