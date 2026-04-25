@@ -83,7 +83,7 @@ elif [[ ! "$zone_http_code" =~ ^2 ]]; then
 	exit 0
 fi
 
-zone_id=$(echo "$zone_info" | jq -r ".zones[] | select(.name == \"$domain\") | .id")
+zone_id=$(echo "$zone_info" | jq -r --arg domain "$domain" '.zones[] | select(.name == $domain) | .id')
 
 if [[ -z "$zone_id" ]]; then
 	echo "badauth"
