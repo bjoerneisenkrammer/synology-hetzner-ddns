@@ -7,6 +7,11 @@ hosts="$1"
 accessToken="$2"
 domain="$3"
 
+if [[ -z "$hosts" || -z "$accessToken" || -z "$domain" ]]; then
+	echo "911"
+	exit 1
+fi
+
 # Initialize status variables
 changes_made=false
 auth_failed=false
